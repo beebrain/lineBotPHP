@@ -6,7 +6,7 @@ function send_LINE($msg){
 
   $messages = [
         'type' => 'text',
-        'text' => $msg
+        'text' => "BEEEEE"
         //'text' => $text
       ];
 

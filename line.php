@@ -1,12 +1,12 @@
  <?php
   
 
-function send_LINE($msg){
- $access_token = 'ALPkDPxL0IeyXrTkJmwwYyfRSGsRp4HCK2BHdwNtSUl21oCdgrX2o3zkeGU0yv9eTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEJxt5nNqXHnJcbJcgePqyVhSWs5ZL9muLlulOa7xAg1IQdB04t89/1O/w1cDnyilFU='; 
+function send_LINE($msg="Message"){
+ $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU='; 
 
   $messages = [
         'type' => 'text',
-        'text' => "BEEEEE"
+        'text' => $msg
         //'text' => $text
       ];
 

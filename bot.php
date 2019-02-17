@@ -37,5 +37,5 @@ if (!is_null($events['events'])) {
 $Topic = "Gate1" ;
 $text = "Test";
 getMqttfromlineMsg($Topic,$text);
-echo "OK3";
+echo "OK Bee";
 ?>

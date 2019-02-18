@@ -28,7 +28,6 @@ if (!is_null($events['events'])) {
 			$payload = [
 				'type' => 'text',
 				'text' => $text,
-				"label":"Yes",
 			];
 			
 		/*	$payload = {  

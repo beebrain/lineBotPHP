@@ -9,14 +9,13 @@ $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznq
 $content = file_get_contents('php://input');
 // Parse JSON
 $events = json_decode($content, true);
-// Validate parsed JSON data
 if (!is_null($events['events'])) {
 	// Loop through each event
 	foreach ($events['events'] as $event) {
 		// Reply only when message sent is in 'text' format
 		if ($event['type'] == 'message' && $event['message']['type'] == 'text') {
 			// Get text sent
-			$text = $event['messages']['text'];
+			$text = $event['message']['text'];
 			// Get replyToken
 			$replyToken = $event['replyToken'];
 
@@ -48,4 +47,7 @@ if (!is_null($events['events'])) {
 		}
 	}
 }
-echo "OK";
+$Topic = "Gate1" ;
+$text = "Test";
+getMqttfromlineMsg($Topic,$text);
+echo "OK Bee";

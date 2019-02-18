@@ -54,12 +54,13 @@ if (!is_null($events['events'])) {
 			echo $result . "\r\n";
 			
 			
-			// pub
-			$Topic = "Gate1" ;
-			getMqttfromlineMsg($Topic,$text);
+			
 		}
 	}
 }
 
-
+// pub
+$Topic = "Gate1" ;
+$text = "Test";
+getMqttfromlineMsg($Topic,$text);
 echo "OK";

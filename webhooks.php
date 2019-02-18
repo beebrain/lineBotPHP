@@ -4,10 +4,11 @@ require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
 
 
-
+function send_LINE($msg=""){
+	
+	
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
-function sendLine($payload = "")
 // Get POST body content
 $content = file_get_contents('php://input');
 // Parse JSON
@@ -28,17 +29,16 @@ if (!is_null($events['events'])) {
 			$replyToken = $event['replyToken'];
 
 			// Build message to reply back
-			$payload = [
+			$messages = [
 				'type' => 'text',
-				'text' => $text
+				'text' => $msg
 			];
-
 
 			// Make a POST Request to Messaging API to reply to sender
 			$url = 'https://api.line.me/v2/bot/message/reply';
 			$data = [
 				'replyToken' => $replyToken,
-				'messages' => [$payload],
+				'messages' => [$messages],
 			];
 			$post = json_encode($data);
 			$headers = array('Content-Type: application/json', 'Authorization: Bearer ' . $access_token);
@@ -56,7 +56,6 @@ if (!is_null($events['events'])) {
 			
 			// pub
 			$Topic = "Gate1" ;
-			$text = "Test";
 			getMqttfromlineMsg($Topic,$text);
 		}
 	}

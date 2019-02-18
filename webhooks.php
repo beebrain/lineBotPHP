@@ -3,8 +3,31 @@
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
 
+
+function sendQuickReply(){
+ [
+    {
+      "type": "text",
+      "text": "Hello Quick Reply!",
+      "quickReply": {
+        "items": [
+          {
+            "type": "action",
+            "imageUrl": "https://cdn1.iconfinder.com/data/icons/mix-color-3/502/Untitled-1-512.png",
+            "action": {
+              "type": "message",
+              "label": "Message",
+              "text": "Hello World!"
+            }
+            }
+        ]
+      }
+    }
+   ]
+}
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
+function sendLine($payload = "")
 // Get POST body content
 $content = file_get_contents('php://input');
 // Parse JSON
@@ -27,20 +50,36 @@ if (!is_null($events['events'])) {
 			// Build message to reply back
 			$payload = [
 				'type' => 'text',
-				'text' => $text,
+				'text' => $text
 			];
 			
-		/*	$payload = {  
-			   "type":"message",
-			   "label":"Yes",
-			   "text":"Yes"
-			};*/
+			$payload = [
+					{
+					  "type": "text",
+					  "text": "Quick Reply!",
+					  "quickReply": {
+						"items": [
+						  {
+							"type": "action",
+							"imageUrl": "https://cdn1.iconfinder.com/data/icons/mix-color-3/502/Untitled-1-512.png",
+							"action": {
+							  "type": "message",
+							  "label": "Message",
+							  "text": "Hello World!"
+							}
+							}
+						]
+					  }
+					}
+				];
+
 			// Make a POST Request to Messaging API to reply to sender
 			$url = 'https://api.line.me/v2/bot/message/reply';
 			$data = [
 				'replyToken' => $replyToken,
 				'messages' => [$payload],
 			];
+			
 			$post = json_encode($data);
 			$headers = array('Content-Type: application/json', 'Authorization: Bearer ' . $access_token);
 

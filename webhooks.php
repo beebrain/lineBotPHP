@@ -1,7 +1,8 @@
 <?php // callback.php
-
+ require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
+
 
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
@@ -15,8 +16,12 @@ if (!is_null($events['events'])) {
 	foreach ($events['events'] as $event) {
 		// Reply only when message sent is in 'text' format
 		if ($event['type'] == 'message' && $event['message']['type'] == 'text') {
-			// Get text sent
-			$text = $event['source']['userId'];
+	// Get text sent
+			if ($msg == ""){
+			$text = $event['message']['text'];
+			}else{
+				$text = $msg;
+			}
 			// Get replyToken
 			$replyToken = $event['replyToken'];
 
@@ -43,9 +48,13 @@ if (!is_null($events['events'])) {
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			$result = curl_exec($ch);
 			curl_close($ch);
-
 			echo $result . "\r\n";
+			
+			
+			// pub
+		
 		}
 	}
 }
+
 echo "OK";

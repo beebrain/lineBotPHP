@@ -3,7 +3,7 @@
        $APPID= "GateControl/"; //enter your appid
      $KEY = "CyjMAcrElwMZM53"; //enter your key
     $SECRET = "kA0orrqNFfCV2MEaoCuSxhir0"; //enter your secret
-    $Topic = "$topic"; 
+    $Topic = $topic; 
       put("https://api.netpie.io/microgear/".$APPID.$Topic."?retain&auth=".$KEY.":".$SECRET,$msg);
  
   }

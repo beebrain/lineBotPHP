@@ -27,34 +27,20 @@ if (!is_null($events['events'])) {
 			// Build message to reply back
 			$payload = [
 				'type' => 'text',
-				'text' => $text
+				'text' => $text,
+				"label":"Yes",
 			];
 			
-			$quick = [
-					{
-					  "type": "text",
-					  "text": "Hello Quick Reply!",
-					  "quickReply": {
-						"items": [
-						  {
-							"type": "action",
-							"imageUrl": "https://cdn1.iconfinder.com/data/icons/mix-color-3/502/Untitled-1-512.png",
-							"action": {
-							  "type": "message",
-							  "label": "Message",
-							  "text": "Hello World!"
-							}
-							}
-						]
-					  }
-					}
-				   ];
-
+		/*	$payload = {  
+			   "type":"message",
+			   "label":"Yes",
+			   "text":"Yes"
+			};*/
 			// Make a POST Request to Messaging API to reply to sender
 			$url = 'https://api.line.me/v2/bot/message/reply';
 			$data = [
 				'replyToken' => $replyToken,
-				'messages' => [$quick],
+				'messages' => [$payload],
 			];
 			$post = json_encode($data);
 			$headers = array('Content-Type: application/json', 'Authorization: Bearer ' . $access_token);

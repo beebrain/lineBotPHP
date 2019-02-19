@@ -2,7 +2,7 @@
  require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
-	require("phpmatt.php");
+	require("phpmqtt.php");
 	
 	
 $Topic = "gate" ;
@@ -10,11 +10,12 @@ $Topic = "gate" ;
 function mqttpub($Topic="gate",$msg){
 	
 
-$server = "mqtt.example.com";     // change if necessary
+$server = "m16.cloudmqtt.com";     // change if necessary
 $port = 37089;                     // change if necessary
 $username = "bee";                   // set your username
 $password = "great1234";                   // set your password
-$client_id = "mqttLine_connect"; // make sure this is unique for connecting to sever - you could use uniqid()
+$client_id = uniqid(); // make sure this is unique for connecting to sever - you could use uniqid()
+
 
 $mqtt = new bluerhinos\phpMQTT($server, $port, "ClientID".rand());
 

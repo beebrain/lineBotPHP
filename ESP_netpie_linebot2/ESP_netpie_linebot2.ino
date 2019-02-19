@@ -20,35 +20,21 @@ MicroGear microgear(client);
 
 void onMsghandler(char *topic, uint8_t* msg, unsigned int msglen) { // 
 
-   String iMsg = "";
-    for (int i=0;i<msglen;i++) iMsg += (char)msg[i];
-    
-      Serial.println(topic);
-      Serial.println(iMsg);
-  
-      if (iMsg == "GET") {
-        microgear.chat("/led", digitalRead(LED_PIN) == HIGH ? "ON" : "LOW");
-      } else if (iMsg == "ON") {
-        digitalWrite(LED_PIN, LOW);
-      } else {
-        digitalWrite(LED_PIN, HIGH);
-    }
-
-    
-    
     Serial.print("Incoming message -->");
     msg[msglen] = '\0';
     Serial.println((char *)msg);
     if(*(char *)msg == '1'){
         digitalWrite(LED_BUILTIN, LOW);   // LED on
+        Serial.println("LED will on");
         //microgear.chat(TargetWeb,"1");
         //send_data("ESP_LED_ON");
-        send_json("ESP LED ON");
+        //send_json("ESP LED ON");
     }else{
         digitalWrite(LED_BUILTIN, HIGH);  // LED off
+        Serial.println("LED will off");
       //microgear.chat(TargetWeb,"0");
       //send_data("ESP_LED_OFF");
-      send_json("ESP LED OFF");
+      //send_json("ESP LED OFF");
     }
 }
 
@@ -118,18 +104,16 @@ void send_json(String data){
 }
 void loop() {
     if (microgear.connected()) {
-        Serial.println("..."); 
         microgear.loop();
         timer = 0;
     }
     else {
-        Serial.println("connection lost, reconnect...");
-        if (timer >= 5000) {
+        if (timer >= 1000) {
+            Serial.println("connection lost, reconnect...");
             microgear.connect(APPID); 
             timer = 0;
         }
         else timer += 100;
     }
-    Serial.println("xxxx");
     delay(100);
 }

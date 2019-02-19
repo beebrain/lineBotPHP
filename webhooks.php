@@ -2,7 +2,7 @@
  require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
-
+$Topic = "Gate" ;
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
 // Get POST body content
@@ -44,10 +44,10 @@ if (!is_null($events['events'])) {
 			curl_close($ch);
 
 			echo $result . "\r\n";
+			
+			getMqttfromlineMsg($Topic,$text);
 		}
 	}
 }
-$Topic = "Gate1" ;
-$text = "Test";
-getMqttfromlineMsg($Topic,$text);
+
 echo "OK Bee";

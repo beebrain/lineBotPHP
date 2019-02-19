@@ -1,25 +1,30 @@
  <?php
  function pubMqtt($topic,$msg){
        $APPID= "GateControl/"; //enter your appid
-     $KEY = "CyjMAcrElwMZM53"; //enter your key
-    $SECRET = "kA0orrqNFfCV2MEaoCuSxhir0"; //enter your secret
+     $KEY = "ye7IuXPkeoiw7ik"; //enter your key
+    $SECRET = "bZn1dQSMy8goobrSd6F6cr9Qk"; //enter your secret
     $Topic = $topic; 
-      put("https://api.netpie.io/microgear/".$APPID.$Topic."?retain&auth=".$KEY.":".$SECRET,$msg);
+    put("https://api.netpie.io/microgear/".$APPID.$Topic."?retain&auth=".$KEY.":".$SECRET,$msg);
  
   }
  function getMqttfromlineMsg($Topic,$lineMsg){
  
     $pos = strpos($lineMsg, ":");
+	$topic = $Topic;
+    $msg = $lineMsg;
+	  
     if($pos){
       $splitMsg = explode(":", $lineMsg);
       $topic = $splitMsg[0];
       $msg = $splitMsg[1];
-      pubMqtt($topic,$msg);
-    }else{
-      $topic = $Topic;
-      $msg = $lineMsg;
-      pubMqtt($topic,$msg);
     }
+	
+	if ($msg = "open"){
+		$msg = "1";
+	}else{
+		$msg = "0";
+	}
+	 pubMqtt($topic,$msg);
   }
  
   function put($url,$tmsg)

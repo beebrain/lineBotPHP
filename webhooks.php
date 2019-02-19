@@ -2,7 +2,7 @@
  require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
-	require("phpmqtt.php");
+require("phpMQTT.php");
 	
 	
 $Topic = "gate" ;
@@ -66,7 +66,7 @@ if (!is_null($events['events'])) {
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			$result = curl_exec($ch);
 			curl_close($ch);
-			mqttpub("/gate/",$text);
+			//mqttpub("/gate/",$text);
 			echo $result . "\r\n";
 			
 		}

@@ -1,119 +1,78 @@
+// Coding By IOXhop : http://www.ioxhop.com/
+
 #include <ESP8266WiFi.h>
-#include <MicroGear.h>
-#include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
-const char* ssid     = "beebrain"; //change this to your SSID
-const char* password = "1234554321"; //change this to your PASSWORD
+#include <PubSubClient.h>
 
-const char* host = "https://beecontrolgate.herokuapp.com/bot.php";//change this to your linebot server ex.http://numpapick-linebot.herokuapp.com/bot.php
-#define APPID   "GateControl"     //change this to your APPID
-#define KEY     "ye7IuXPkeoiw7ik"     //change this to your KEY
-#define SECRET  "bZn1dQSMy8goobrSd6F6cr9Qk"     //change this to your SECRET
+// Update these with values suitable for your network.
+const char* ssid = "beebrain";
+const char* password = "1234554321";
 
-#define ALIAS   "NodeGate" //set name of drvice
-#define TargetWeb "switch" //set target name of web
+// Config MQTT Server
+#define mqtt_server "m16.cloudmqtt.com"
+#define mqtt_port YOURMQTTPORT
+#define mqtt_user "TEST"
+#define mqtt_password "12345"
 
-WiFiClient client;
-String uid = "";
-int timer = 0;
-MicroGear microgear(client);
+#define LED_PIN 2
 
-void onMsghandler(char *topic, uint8_t* msg, unsigned int msglen) { // 
-
-    Serial.print("Incoming message -->");
-    msg[msglen] = '\0';
-    Serial.println((char *)msg);
-    if(*(char *)msg == '1'){
-        digitalWrite(LED_BUILTIN, LOW);   // LED on
-        Serial.println("LED will on");
-        //microgear.chat(TargetWeb,"1");
-        //send_data("ESP_LED_ON");
-        //send_json("ESP LED ON");
-    }else{
-        digitalWrite(LED_BUILTIN, HIGH);  // LED off
-        Serial.println("LED will off");
-      //microgear.chat(TargetWeb,"0");
-      //send_data("ESP_LED_OFF");
-      //send_json("ESP LED OFF");
-    }
-}
-
-void onConnected(char *attribute, uint8_t* msg, unsigned int msglen) {
-    Serial.println("Connected to NETPIE...");
-    microgear.setName(ALIAS);
-}
-
+WiFiClient espClient;
+PubSubClient client(espClient);
 
 void setup() {
-
-      pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   
-    Serial.begin(115200);
-    Serial.println("Starting...");
-    if (WiFi.begin(ssid, password)) {
-        while (WiFi.status() != WL_CONNECTED) {
-            delay(500);
-            Serial.print(".");
-        }
-    }
+  Serial.begin(115200);
+  delay(10);
 
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
 
+  WiFi.begin(ssid, password);
 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
   Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-
-    microgear.on(MESSAGE,onMsghandler);
-    microgear.on(CONNECTED,onConnected);
-
-
-
-    microgear.init(KEY,SECRET,ALIAS);
-    microgear.connect(APPID);
-     digitalWrite(LED_BUILTIN, HIGH);   // LED on
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
 }
 
-void send_json(String data){
-  StaticJsonBuffer<300> JSONbuffer;   //Declaring static JSON buffer
-    JsonObject& JSONencoder = JSONbuffer.createObject(); 
- 
-    JSONencoder["ESP"] = data;
- 
-    JsonArray& values = JSONencoder.createNestedArray("values"); //JSON array
-    values.add(20); //Add value to array
-    values.add(21); //Add value to array
-    values.add(23); //Add value to array
- 
- 
-    char JSONmessageBuffer[300];
-    JSONencoder.prettyPrintTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-    Serial.println(JSONmessageBuffer);
- 
-    HTTPClient http;    //Declare object of class HTTPClient
- 
-    http.begin(host);      //Specify request destination
-    http.addHeader("Content-Type", "application/json");  //Specify content-type header
- 
-    int httpCode = http.POST(JSONmessageBuffer);   //Send the request
-    String payload = http.getString();                                        //Get the response payload
- 
-    Serial.println(httpCode);   //Print HTTP return code
-    Serial.println(payload);    //Print request response payload
- 
-    http.end();  //Close connection
-}
 void loop() {
-    if (microgear.connected()) {
-        microgear.loop();
-        timer = 0;
+  if (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    if (client.connect("ESP8266Client", mqtt_user, mqtt_password)) {
+      Serial.println("connected");
+      client.subscribe("/ESP/LED");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
+      return;
     }
-    else {
-        if (timer >= 1000) {
-            Serial.println("connection lost, reconnect...");
-            microgear.connect(APPID); 
-            timer = 0;
-        }
-        else timer += 100;
-    }
-    delay(100);
+  }
+  client.loop();
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  String msg = "";
+  int i=0;
+  while (i<length) msg += (char)payload[i++];
+  if (msg == "GET") {
+    client.publish("/ESP/LED", (digitalRead(LED_PIN) ? "LEDON" : "LEDOFF"));
+    Serial.println("Send !");
+    return;
+  }
+  digitalWrite(LED_PIN, (msg == "LEDON" ? HIGH : LOW));
+  Serial.println(msg);
 }

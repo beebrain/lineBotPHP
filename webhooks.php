@@ -2,7 +2,30 @@
  require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
-$Topic = "Gate" ;
+	require("phpmatt.php");
+	
+	
+$Topic = "gate" ;
+
+function mqttpub($Topic="gate",$msg){
+	
+
+$server = "mqtt.example.com";     // change if necessary
+$port = 37089;                     // change if necessary
+$username = "bee";                   // set your username
+$password = "great1234";                   // set your password
+$client_id = "mqttLine_connect"; // make sure this is unique for connecting to sever - you could use uniqid()
+
+$mqtt = new bluerhinos\phpMQTT($server, $port, "ClientID".rand());
+
+if ($mqtt->connect(true,NULL,$username,$password)) {
+  $mqtt->publish("/gate/",$message, 0);
+  $mqtt->close();
+}else{
+  echo "Fail or time out";
+}
+}
+
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
 // Get POST body content
@@ -42,10 +65,9 @@ if (!is_null($events['events'])) {
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			$result = curl_exec($ch);
 			curl_close($ch);
-
+			mqttpub("/gate/",$text);
 			echo $result . "\r\n";
 			
-			getMqttfromlineMsg($Topic,$text);
 		}
 	}
 }

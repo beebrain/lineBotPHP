@@ -3,29 +3,6 @@
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
 require("phpMQTT.php");
-	
-	
-$Topic = "gate" ;
-
-function mqttpub($Topic="gate",$msg){
-	
-
-$server = "m16.cloudmqtt.com";     // change if necessary
-$port = 37089;                     // change if necessary
-$username = "bee";                   // set your username
-$password = "great1234";                   // set your password
-$client_id = uniqid(); // make sure this is unique for connecting to sever - you could use uniqid()
-
-
-$mqtt = new bluerhinos\phpMQTT($server, $port, "ClientID".rand());
-
-if ($mqtt->connect(true,NULL,$username,$password)) {
-  $mqtt->publish("/gate/",$message, 0);
-  $mqtt->close();
-}else{
-  echo "Fail or time out";
-}
-}
 
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
@@ -73,4 +50,51 @@ if (!is_null($events['events'])) {
 	}
 }
 
-echo "OK Bee";
+?>
+<script src="jquery-1.11.3.min.js"></script>
+<script src="mqttws31.js"></script>
+
+<script>
+var config = {
+	mqtt_server: "m16.cloudmqtt.com",
+	mqtt_websockets_port: 37089,
+	mqtt_user: "bee",
+	mqtt_password: "great1234"
+};
+
+$(document).ready(function(e) {
+	// Create a client instance
+	client = new Paho.MQTT.Client(config.mqtt_server, config.mqtt_websockets_port, "web_" + parseInt(Math.random() * 100, 10)); 
+	//Example client = new Paho.MQTT.Client("m11.cloudmqtt.com", 32903, "web_" + parseInt(Math.random() * 100, 10));
+	
+	// connect the client
+	client.connect({
+		useSSL: true,
+		userName: config.mqtt_user,
+		password: config.mqtt_password,
+		onSuccess: function() {
+			// Once a connection has been made, make a subscription and send a message.
+			// console.log("onConnect");
+			$("#status").text("Connected").removeClass().addClass("connected");
+			client.subscribe("/gate/");
+			mqttSend("/gate/", "OPEN");
+		},
+		onFailure: function(e) {
+			console.log(e);
+		}
+	});
+	
+	
+	
+	
+});
+
+function close(){
+client.disconnect();
+}
+var mqttSend = function(topic, msg) {
+	var message = new Paho.MQTT.Message(msg);
+	message.destinationName = topic;
+	client.send(message); 
+}
+</script>

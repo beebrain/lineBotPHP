@@ -1,8 +1,6 @@
 <?php // callback.php
- require("pub.php");
 require "vendor/autoload.php";
 require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
-require("phpMQTT.php");
 
 $access_token = '09hPKMB6Ww68KbPUGvXrGg25g42qFZsANdnOssQ26F4ldpCDINz8KsNNrD5cznqMTJ7Wu1KHxQ9E8THiccaC+mjKLdQYIoXEknO2fOmVkEIXpUILyU6JyQNSnwHnMFMC9pED0MGuOblkjM3P6t5odQdB04t89/1O/w1cDnyilFU=';
 
@@ -49,8 +47,9 @@ if (!is_null($events['events'])) {
 		}
 	}
 }
-
+echo "OK";
 ?>
+<!--
 <script src="jquery-1.11.3.min.js"></script>
 <script src="mqttws31.js"></script>
 
@@ -97,4 +96,4 @@ var mqttSend = function(topic, msg) {
 	message.destinationName = topic;
 	client.send(message); 
 }
-</script>
+</script> -->
